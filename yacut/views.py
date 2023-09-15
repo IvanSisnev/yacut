@@ -2,7 +2,7 @@
 View-функции приложения.
 """
 from flask.views import View
-from flask import render_template
+from flask import render_template, request
 
 from yacut import app, db
 from yacut.models import URLMap
@@ -14,6 +14,8 @@ class IndexPage(View):
 
     def dispatch_request(self):
         form = UrlForm()
+        if request.method == 'POST':
+            ...
         return render_template('index_page.html', form=form)
 
 
