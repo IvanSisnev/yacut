@@ -1,3 +1,6 @@
+"""
+Инициализация и конфигурация приложения.
+"""
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -9,7 +12,7 @@ app.config.from_object(Config)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-from . import cli_commands, error_handlers, views, api_views
+from yacut import cli_commands, error_handlers, views, api_views
 
 if __name__ == '__main__':
-     app.run()
+    app.run()
