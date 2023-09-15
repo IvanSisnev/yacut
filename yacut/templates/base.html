@@ -1,3 +1,4 @@
+<!--базовый наследуемый шаблон-->
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -19,7 +20,9 @@
   <link rel="stylesheet"
         href="{{ url_for('static', filename='css/bootstrap.min.css') }}"
   >
-  <title>YaCut - укоротитель ссылок</title>
+  <title>
+    {% block title %}YaCut - укоротитель ссылокь{% endblock title %}
+  </title>
 </head>
 <body>
 {% include 'header.html' %}
