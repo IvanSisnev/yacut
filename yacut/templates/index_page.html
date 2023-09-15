@@ -18,12 +18,16 @@
               <div>
                 {{ form.original_link(class="form-control form-control-lg
                 py-2 mb-3", placeholder=form.original_link.label.text) }}
-                {% include 'error.html' %}
+                {% with errors=form.original_link.errors %}
+                  {% include 'error.html' %}
+                {% endwith %}
               </div>
               <div>
                 {{ form.custom_id(class="form-control form-control-lg py-2
                 mb-3", placeholder=form.custom_id.label.text) }}
-                {% include 'error.html' %}
+                {% with errors=form.custom_id.errors %}
+                  {% include 'error.html' %}
+                {% endwith %}
               </div>
               {{ form.submit(class="btn btn-primary") }}
             </div>

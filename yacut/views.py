@@ -10,6 +10,8 @@ from yacut.forms import UrlForm
 
 
 class IndexPage(View):
+    methods = ["GET", "POST"]
+
     def dispatch_request(self):
         form = UrlForm()
         return render_template('index_page.html', form=form)
