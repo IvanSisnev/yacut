@@ -18,12 +18,12 @@
               <div>
                 {{ form.original_link(class="form-control form-control-lg
                 py-2 mb-3", placeholder=form.original_link.label.text) }}
-                <p><span style="color:red">Текст возможной ошибки</span></p>
+                {% include 'error.html' %}
               </div>
               <div>
                 {{ form.custom_id(class="form-control form-control-lg py-2
                 mb-3", placeholder=form.custom_id.label.text) }}
-                <p><span style="color:red">Текст возможной ошибки</span></p>
+                {% include 'error.html' %}
               </div>
               {{ form.submit(class="btn btn-primary") }}
             </div>

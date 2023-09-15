@@ -1,0 +1,7 @@
+<p>
+  {% if form.text.errors %}
+  {% for error in form.text.errors %}
+  <span style="color:red">{{ error }}</span>
+  {% endfor %}
+  {% endif %}
+</p>
