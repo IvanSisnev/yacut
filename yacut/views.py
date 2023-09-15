@@ -12,7 +12,7 @@ from yacut.forms import UrlForm
 class IndexPage(View):
     def dispatch_request(self):
         form = UrlForm()
-        return 'главная страница'
+        return render_template('index_page.html', form=form)
 
 
-app.add_url_rule('/', view_func=IndexPage.as_view("index_page"))
+app.add_url_rule('/', view_func=IndexPage.as_view('index_page'))
