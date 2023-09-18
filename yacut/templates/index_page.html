@@ -20,14 +20,14 @@
                 {{ form.original_link(class="form-control form-control-lg
                 py-2 mb-3", placeholder=form.original_link.label.text) }}
                 {% with errors=form.original_link.errors %}
-                  {% include 'error.html' %}
+                {% include 'error.html' %}
                 {% endwith %}
               </div>
               <div>
                 {{ form.custom_id(class="form-control form-control-lg py-2
                 mb-3", placeholder=form.custom_id.label.text) }}
                 {% with errors=form.custom_id.errors %}
-                  {% include 'error.html' %}
+                {% include 'error.html' %}
                 {% endwith %}
               </div>
               {{ form.submit(class="btn btn-primary") }}
@@ -44,8 +44,22 @@
         <div class="col-sm">
         </div>
         <div class="col-sm">
+          {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            {% for message in messages %}
+              <span style="color:red">{{ message }}</span>
+            {% endfor %}
+          {% endif %}
+          {% endwith %}
+          {% if urlmap %}
           <p class="text-center">
-          <h5 class="text-center">Пример информационного сообщения</h5>
+          <h5 class="text-center">
+            Ваша новая ссылка готова:
+            <a href="{{ urlmap.original }}">
+              {{ url_for('index_page', _external=True) + urlmap.short }}
+            </a>
+          </h5>
+          {% endif %}
           </p>
         </div>
         <div class="col-sm">

@@ -36,8 +36,10 @@ class IndexPage(View):
             db.session.commit()
             # todo оставить original_link и short_id если было
             # todo вывести готовую ссылку
-            return redirect(...), 200
-        return render_template('index_page.html', form=form), 200
+            return render_template('index_page.html',
+                                   form=form, urlmap=urlmap), 200
+        return render_template('index_page.html',
+                               form=form), 200
 
 
 app.add_url_rule('/', view_func=IndexPage.as_view('index_page'))
