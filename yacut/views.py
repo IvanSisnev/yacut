@@ -27,16 +27,17 @@ class IndexPage(View):
             if not short_id:
                 short_id: str = get_unique_short_id()
             elif not check_for_duplicates(short_id):
-                flash('Такая короткая ссылка уже используется')
+                flash(f'Имя {short_id} уже занято!')
                 # todo оставить original_link
-                return render_template('index_page.html', form=form)
+                return render_template('index_page.html', form=form), 200
+            # todo проверка на допустимые символы?
             urlmap = URLMap(original=form.original_link.data, short=short_id)
             db.session.add(urlmap)
             db.session.commit()
             # todo оставить original_link и short_id если было
             # todo вывести готовую ссылку
-            return redirect(...)
-        return render_template('index_page.html', form=form)
+            return redirect(...), 200
+        return render_template('index_page.html', form=form), 200
 
 
 app.add_url_rule('/', view_func=IndexPage.as_view('index_page'))
