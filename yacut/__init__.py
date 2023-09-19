@@ -12,7 +12,7 @@ app.config.from_object(Config)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-from yacut import cli_commands, error_handlers, views, api_views
+from yacut import views, api_views, error_handlers
 
 if __name__ == '__main__':
     app.run()

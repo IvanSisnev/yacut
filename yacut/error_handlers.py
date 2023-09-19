@@ -1,11 +1,11 @@
 """
 Обработчики ошибок приложения.
 """
-from flask import jsonify, render_template
+from flask import render_template
 
 from . import app, db
 
-# todo проверить работу обработчиков.
+
 @app.errorhandler(404)
 def page_not_found(error):
     """
