@@ -22,4 +22,20 @@ def internal_error(error):
     db.session.rollback()
     return render_template('500.html'), 500
 
-# todo добавить обработчики ошибок API
+
+class APICustomError(Exception):
+    status_code = 400
+
+    def __init__(self, message, status_code=None):
+        super().__init__()
+        self.message = message
+        if status_code:
+            self.status_code = status_code
+
+    def to_dict(self):
+        return dict(message=self.message)
+
+
+@app.errorhandler(APICustomError)
+def api_custom_error(error):
+    return jsonify(error.to_dict()), error.status_code
