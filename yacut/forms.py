@@ -2,8 +2,11 @@
 Формы приложения.
 """
 from flask_wtf import FlaskForm
-from wtforms import URLField, StringField, SubmitField
+from wtforms import URLField, StringField, SubmitField, ValidationError
 from wtforms.validators import DataRequired, Length, URL, Optional
+
+from yacut.validators import (check_for_unallowed_chars,
+                              check_for_duplicates)
 
 
 class UrlForm(FlaskForm):
@@ -16,24 +19,31 @@ class UrlForm(FlaskForm):
         validators=[
             DataRequired(message='Обязательное поле'),
             URL(message='Проверьте правильность url адреса'),
-            Length(
-                1, 256,
-                # todo нужно ли сообщение так как действует ограничение
-                message='Длина url адреса не должна превышать 256 символов')
+            Length(1, 256,)
         ]
     )
-    # необязательное поле для псевдонима
+    # необязательное поле для короткой ссылки пользователя
     custom_id = StringField(
         'Ваш вариант короткой ссылки',
         validators=[
-            Length(
-                1, 16,
-                # todo нужно ли сообщение так как действует ограничение
-                message=(
-                    'Длина короткой ссылки не должна превышать 16 символов'
-                )
-            ),
+            Length(1, 16),
             Optional()
         ]
     )
     submit = SubmitField('Создать')
+
+    @staticmethod
+    def validate_custom_id(form, field):
+        """
+        Проверяет короткую ссылку пользователя на недопустимые символы и
+        на уникальность в БД.
+        """
+        if not check_for_unallowed_chars(field.data):
+            raise ValidationError(
+                message=('В короткой ссылке можно использовать только '
+                         'латинские буквы и цифры')
+            )
+        if not check_for_duplicates(field.data):
+            raise ValidationError(
+                message=f'Имя {field.data} уже занято!'
+            )
