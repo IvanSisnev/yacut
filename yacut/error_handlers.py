@@ -1,7 +1,7 @@
 """
 Обработчики ошибок приложения.
 """
-from flask import render_template
+from flask import render_template, jsonify
 
 from . import app, db
 

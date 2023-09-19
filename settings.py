@@ -18,3 +18,12 @@ CUSTOM_ID_SEQUENCE: Final[list] = list(ascii_letters + digits)
 
 # длина короткой ссылки
 CUSTOM_ID_LENGTH: Final[int] = 6
+
+# максимальная длина оригинального url адреса
+ORIGINAL_MAX_LENGTH: Final[int] = 256
+
+# минимальная длина короткой ссылки
+SHORT_MIN_LENGTH: Final[int] = 1
+
+# максимальная длина короткой ссылки
+SHORT_MAX_LENGTH: Final[int] = 16
