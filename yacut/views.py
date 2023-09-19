@@ -2,7 +2,7 @@
 View-функции приложения.
 """
 from flask.views import View
-from flask import request, render_template, redirect
+from flask import render_template, redirect, abort
 
 from yacut import app, db
 from yacut.models import URLMap
@@ -18,7 +18,8 @@ class IndexPage(View):
 
     def dispatch_request(self):
         """
-        View-функция.
+        Передает на страницу форму, проверяет ее в случае метода POST и
+        сохраняет в БД.
         """
         form = UrlForm()
         if form.validate_on_submit():
@@ -35,3 +36,23 @@ class IndexPage(View):
 
 
 app.add_url_rule('/', view_func=IndexPage.as_view('index_page'))
+
+
+class RedirectPage(View):
+    """
+    View-класс страницы редиректа с короткой ссылки на оригинальную.
+    """
+    methods = ['GET']
+
+    def dispatch_request(self, short_id):
+        """
+        Перенаправляет с url адреса короткой ссылки на оригинальную ссылку.
+        """
+        urlmap = URLMap.query.filter_by(short=short_id).first()
+        if urlmap:
+            return redirect(urlmap.original)
+        abort(404)
+
+
+app.add_url_rule('/<string:short_id>/',
+                 view_func=RedirectPage.as_view('redirect_page'))
