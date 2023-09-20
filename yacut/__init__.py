@@ -7,6 +7,7 @@ from flask_migrate import Migrate
 
 from settings import Config
 
+# todo logging
 app = Flask(__name__)
 app.config.from_object(Config)
 db = SQLAlchemy(app)

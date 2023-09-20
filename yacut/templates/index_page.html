@@ -46,21 +46,20 @@
         <div class="col-sm">
           {% with messages = get_flashed_messages() %}
           {% if messages %}
-            {% for message in messages %}
-              <span style="color:red">{{ message }}</span>
-            {% endfor %}
+          {% for message in messages %}
+          <span style="color:red">{{ message }}</span>
+          {% endfor %}
           {% endif %}
           {% endwith %}
           {% if urlmap %}
           <p class="text-center">
           <h5 class="text-center">
             Ваша новая ссылка готова:
-            <a href="{{ url_for('index_page', _external=True) + urlmap.short }}">
+            <a href="{{ url_for('index_page', _external=True)+urlmap.short }}">
               {{ url_for('index_page', _external=True) + urlmap.short }}
             </a>
           </h5>
           {% endif %}
-          </p>
         </div>
         <div class="col-sm">
         </div>
