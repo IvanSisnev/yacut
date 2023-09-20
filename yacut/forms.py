@@ -31,7 +31,7 @@ class UrlForm(FlaskForm):
         ]
     )
     submit = SubmitField('Создать')
-
+    # todo добавить валидацию url
     @staticmethod
     def validate_custom_id(form, field):
         """

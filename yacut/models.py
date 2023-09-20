@@ -17,3 +17,9 @@ class URLMap(db.Model):
     # поле короткой ссылки (псевдонима)
     short = db.Column(db.String(SHORT_MAX_LENGTH), unique=True)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+
+    def to_dict(self):
+        return {
+            'url': self.original,
+            'custom_id': self.short,
+        }

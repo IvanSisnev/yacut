@@ -22,3 +22,5 @@ def check_for_duplicates(short_id: str) -> bool:
     :return: True если ссылка уникальна.
     """
     return URLMap.query.filter_by(short=short_id).first() is None
+
+# todo import validators -> validators.url -> ValidationError
