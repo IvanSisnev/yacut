@@ -1,6 +1,8 @@
 """
 Валидаторы приложения.
 """
+import validators
+
 from settings import CUSTOM_ID_SEQUENCE
 from yacut.models import URLMap
 
@@ -23,4 +25,11 @@ def check_for_duplicates(short_id: str) -> bool:
     """
     return URLMap.query.filter_by(short=short_id).first() is None
 
-# todo import validators -> validators.url -> ValidationError
+
+def validate_url(url: str) -> bool:
+    """
+    Проверяет оригинальный url на валидность.
+    :param url: строка со ссылкой.
+    :return: True если ссылка правильная.
+    """
+    return validators.url(url)

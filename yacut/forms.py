@@ -6,7 +6,7 @@ from wtforms import URLField, StringField, SubmitField, ValidationError
 from wtforms.validators import DataRequired, Length, URL, Optional
 
 from yacut.validators import (check_for_unallowed_chars,
-                              check_for_duplicates)
+                              check_for_duplicates, validate_url)
 
 
 class UrlForm(FlaskForm):
@@ -31,7 +31,19 @@ class UrlForm(FlaskForm):
         ]
     )
     submit = SubmitField('Создать')
-    # todo добавить валидацию url
+
+    @staticmethod
+    def validate_original_link(form, field):
+        """
+        Проверяет оригинальный url адрес на правильность.
+        """
+        try:
+            validate_url(field.data)
+        except ValidationError:
+            raise ValidationError(
+                message='Проверьте правильность url адреса'
+            )
+
     @staticmethod
     def validate_custom_id(form, field):
         """
