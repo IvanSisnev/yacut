@@ -24,6 +24,9 @@ def internal_error(error):
 
 
 class APICustomError(Exception):
+    """
+    Кастомная ошибка для API.
+    """
     status_code = 400
 
     def __init__(self, message, status_code=None):
@@ -38,4 +41,7 @@ class APICustomError(Exception):
 
 @app.errorhandler(APICustomError)
 def api_custom_error(error):
+    """
+    Обрабатывает кастомные ошибки API.
+    """
     return jsonify(error.to_dict()), error.status_code

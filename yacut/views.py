@@ -49,10 +49,10 @@ class RedirectPage(View):
         Перенаправляет с url адреса короткой ссылки на оригинальную ссылку.
         """
         urlmap = URLMap.query.filter_by(short=short_id).first()
-        if urlmap:
-            return redirect(urlmap.original)
-        abort(404)
+        if not urlmap:
+            abort(404)
+        return redirect(urlmap.original)
 
 
-app.add_url_rule('/<string:short_id>/',
+app.add_url_rule('/<string:short_id>',
                  view_func=RedirectPage.as_view('redirect_page'))

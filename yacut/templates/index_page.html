@@ -55,7 +55,7 @@
           <p class="text-center">
           <h5 class="text-center">
             Ваша новая ссылка готова:
-            <a href="{{ urlmap.original }}">
+            <a href="{{ url_for('index_page', _external=True) + urlmap.short }}">
               {{ url_for('index_page', _external=True) + urlmap.short }}
             </a>
           </h5>

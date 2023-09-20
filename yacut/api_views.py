@@ -17,47 +17,63 @@ api = Api(app, prefix='/api/')
 
 
 class NewShortId(Resource):
-
+    """
+    Эндпоинт для создания короткой ссылки.
+    """
     def post(self):
-        data = request.get_json()
-        if 'url' not in data:
-            raise APICustomError('Отсутствует обязательное поле url')
+        """
+        Отрабатывает метод post: создает запись в БД.
+        """
+        if not (data := request.get_json()):
+            raise APICustomError('Отсутствует тело запроса')
+
+        elif 'url' not in data:
+            raise APICustomError('"url" является обязательным полем!')
 
         elif len(url := data['url']) > ORIGINAL_MAX_LENGTH:
             raise APICustomError(
                 f'Длина url не должна превышать {ORIGINAL_MAX_LENGTH}'
             )
-        # проверяю url на правильность
+
         try:
             validate_url(url)
         except ValidationError:
-            raise APICustomError(
-                f'Проверьте правильность url'
-            )
+            raise APICustomError(f'Проверьте правильность url')
 
-        if 'custom_id' in data:
-            if len(custom_id := data['custom_id']) > SHORT_MAX_LENGTH:
+        if 'custom_id' in data and (custom_id := data['custom_id']):
+            if (not check_for_unallowed_chars(custom_id)
+                    or len(custom_id) > SHORT_MAX_LENGTH):
                 raise APICustomError(
-                    'Длина custom_id не должна превышать '
-                    f'{SHORT_MAX_LENGTH} символов'
-                )
-            elif not check_for_unallowed_chars(custom_id):
-                raise APICustomError(
-                    'Поле custom_id должно содержать только латинские буквы и '
-                    'цифры'
+                    'Указано недопустимое имя для короткой ссылки'
                 )
             elif not check_for_duplicates(custom_id):
-                raise APICustomError(
-                    'Такой custom_id уже используется.'
-                )
+                raise APICustomError(f'Имя "{custom_id}" уже занято.')
         else:
-            custom_id = get_unique_short_id()
+            custom_id: str = get_unique_short_id()
 
         urlmap = URLMap(original=url, short=custom_id)
         db.session.add(urlmap)
         db.session.commit()
 
-        return urlmap.to_dict(), 201
+        return urlmap.original_short_serializer(), 201
 
 
 api.add_resource(NewShortId, '/id/')
+
+
+class GetOriginalUrl(Resource):
+    """
+    Эндпоинт для получения оригинальной ссылки.
+    """
+    def get(self, short_id):
+        """
+        Отрабатывает метод get: возвращает оригинальную ссылку.
+        """
+        urlmap = URLMap.query.filter_by(short=short_id).first()
+        if not urlmap:
+            raise APICustomError('Указанный id не найден',
+                                 status_code=404)
+        return urlmap.original_short_serializer(mode='original_only')
+
+
+api.add_resource(GetOriginalUrl, '/id/<string:short_id>/')

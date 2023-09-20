@@ -3,6 +3,8 @@
 """
 from datetime import datetime
 
+from flask import url_for
+
 from yacut import db
 from settings import ORIGINAL_MAX_LENGTH, SHORT_MAX_LENGTH
 
@@ -18,8 +20,13 @@ class URLMap(db.Model):
     short = db.Column(db.String(SHORT_MAX_LENGTH), unique=True)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 
-    def to_dict(self):
-        return {
-            'url': self.original,
-            'custom_id': self.short,
-        }
+    def original_short_serializer(self, mode=None):
+        """
+        Сериализует поля оriginal и short для передачи на эндпоинты.
+        """
+        if mode == 'original_only':
+            return {'url': self.original}
+        return {'short_link': (url_for('index_page', _external=True) +
+                               self.short),
+                'url': self.original
+                }
