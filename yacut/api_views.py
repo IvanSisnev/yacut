@@ -45,11 +45,11 @@ class NewShortId(Resource):
         except ValidationError:
             app.logger.info(f'Переданный url {url} не прошел проверку на '
                             'валидность.')
-            raise APICustomError(f'Проверьте правильность url')
+            raise APICustomError('Проверьте правильность url')
 
         if 'custom_id' in data and (custom_id := data['custom_id']):
-            if (not check_for_unallowed_chars(custom_id)
-                    or len(custom_id) > SHORT_MAX_LENGTH):
+            if (not check_for_unallowed_chars(custom_id) or
+                    len(custom_id) > SHORT_MAX_LENGTH):
                 app.logger.info(f'Переданная короткая ссылка {custom_id} не '
                                 'отвечает требованиям.')
                 raise APICustomError(

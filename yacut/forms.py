@@ -10,7 +10,6 @@ from yacut.validators import (check_for_unallowed_chars,
                               check_for_duplicates, validate_url)
 
 
-
 class UrlForm(FlaskForm):
     """
     Формы для главной страницы приложения.
