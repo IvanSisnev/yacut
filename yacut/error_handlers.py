@@ -1,7 +1,7 @@
 """
 Обработчики ошибок приложения.
 """
-from flask import render_template, jsonify
+from flask import render_template
 
 from . import app, db
 
@@ -27,6 +27,7 @@ class APICustomError(Exception):
     """
     Кастомная ошибка для API.
     """
+    # статус по умолчанию
     status_code = 400
 
     def __init__(self, message, status_code=None):
@@ -36,6 +37,9 @@ class APICustomError(Exception):
             self.status_code = status_code
 
     def to_dict(self):
+        """
+        Создает словарь с текстом сообщения.
+        """
         return dict(message=self.message)
 
 
@@ -44,4 +48,4 @@ def api_custom_error(error):
     """
     Обрабатывает кастомные ошибки API.
     """
-    return jsonify(error.to_dict()), error.status_code
+    return error.to_dict(), error.status_code

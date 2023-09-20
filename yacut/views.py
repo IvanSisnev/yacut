@@ -22,15 +22,22 @@ class IndexPage(View):
         сохраняет в БД.
         """
         form = UrlForm()
+
+        # если форма заполнена и отправлена
         if form.validate_on_submit():
             short_id = form.custom_id.data
+            # если short_id не передана, создаю ее
             if not short_id:
                 short_id: str = get_unique_short_id()
+
             urlmap = URLMap(original=form.original_link.data, short=short_id)
             db.session.add(urlmap)
             db.session.commit()
+            app.logger.info('Новая запись создана')
+            # возвращаю шаблон с созданной короткой ссылкой
             return render_template('index_page.html',
                                    form=form, urlmap=urlmap), 200
+        # возвращаю шаблон с формой
         return render_template('index_page.html',
                                form=form), 200
 

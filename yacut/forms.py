@@ -55,7 +55,7 @@ class UrlForm(FlaskForm):
                 message=('В короткой ссылке можно использовать только '
                          'латинские буквы и цифры')
             )
-        if not check_for_duplicates(field.data):
+        elif not check_for_duplicates(field.data):
             raise ValidationError(
                 message=f'Имя {field.data} уже занято!'
             )

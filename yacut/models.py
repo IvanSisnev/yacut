@@ -11,7 +11,7 @@ from settings import ORIGINAL_MAX_LENGTH, SHORT_MAX_LENGTH
 
 class URLMap(db.Model):
     """
-    Модель БД проекта: таблица url адресов.
+    Модель БД проекта: таблица url адресов и их псевдонимов.
     """
     id = db.Column(db.Integer, primary_key=True)
     # поле оригинальной (длинной) ссылки
@@ -22,11 +22,11 @@ class URLMap(db.Model):
 
     def original_short_serializer(self, mode=None):
         """
-        Сериализует поля оriginal и short для передачи на эндпоинты.
+        Сериализует поля original и short для передачи на эндпоинты.
         """
         if mode == 'original_only':
             return {'url': self.original}
-        return {'short_link': (url_for('index_page', _external=True) +
-                               self.short),
-                'url': self.original
-                }
+        return {
+            'short_link': (url_for('index_page', _external=True) + self.short),
+            'url': self.original
+        }
