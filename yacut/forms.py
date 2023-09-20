@@ -5,8 +5,10 @@ from flask_wtf import FlaskForm
 from wtforms import URLField, StringField, SubmitField, ValidationError
 from wtforms.validators import DataRequired, Length, URL, Optional
 
+from yacut import app
 from yacut.validators import (check_for_unallowed_chars,
                               check_for_duplicates, validate_url)
+
 
 
 class UrlForm(FlaskForm):
@@ -40,6 +42,8 @@ class UrlForm(FlaskForm):
         try:
             validate_url(field.data)
         except ValidationError:
+            app.logger.info(f'Переданный url {field.data} не прошел проверку '
+                            'на валидность.')
             raise ValidationError(
                 message='Проверьте правильность url адреса'
             )
@@ -51,11 +55,15 @@ class UrlForm(FlaskForm):
         на уникальность в БД.
         """
         if not check_for_unallowed_chars(field.data):
+            app.logger.info(f'В короткой ссылке {field.data} обнаружены '
+                            'недопустимые символы.')
             raise ValidationError(
                 message=('В короткой ссылке можно использовать только '
                          'латинские буквы и цифры')
             )
         elif not check_for_duplicates(field.data):
+            app.logger.info(f'Переданная короткая ссылка {field.data} не '
+                            'уникальна.')
             raise ValidationError(
                 message=f'Имя {field.data} уже занято!'
             )

@@ -33,7 +33,7 @@ class IndexPage(View):
             urlmap = URLMap(original=form.original_link.data, short=short_id)
             db.session.add(urlmap)
             db.session.commit()
-            app.logger.info('Новая запись создана')
+            app.logger.info(f'Новая запись с id {urlmap.id} создана.')
             # возвращаю шаблон с созданной короткой ссылкой
             return render_template('index_page.html',
                                    form=form, urlmap=urlmap), 200
@@ -57,7 +57,10 @@ class RedirectPage(View):
         """
         urlmap = URLMap.query.filter_by(short=short_id).first()
         if not urlmap:
+            app.logger.warning('Ошибка 404 при обращении к странице по '
+                               f'короткой ссылке {short_id}.')
             abort(404)
+        app.logger.info(f'Успешный редирект по короткой ссылке {short_id}.')
         return redirect(urlmap.original)
 
 

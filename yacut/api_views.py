@@ -25,12 +25,17 @@ class NewShortId(Resource):
         Отрабатывает метод post: создает запись в БД.
         """
         if not (data := request.get_json()):
+            app.logger.info('Получен пустой запрос.')
             raise APICustomError('Отсутствует тело запроса')
 
         elif 'url' not in data:
+            app.logger.info(
+                'В запросе отсутствует обязательное поле url.'
+            )
             raise APICustomError('"url" является обязательным полем!')
 
         elif len(url := data['url']) > ORIGINAL_MAX_LENGTH:
+            app.logger.info(f'В запросе передан слишком длинный url: {url}.')
             raise APICustomError(
                 f'Длина url не должна превышать {ORIGINAL_MAX_LENGTH}'
             )
@@ -38,15 +43,21 @@ class NewShortId(Resource):
         try:
             validate_url(url)
         except ValidationError:
+            app.logger.info(f'Переданный url {url} не прошел проверку на '
+                            'валидность.')
             raise APICustomError(f'Проверьте правильность url')
 
         if 'custom_id' in data and (custom_id := data['custom_id']):
             if (not check_for_unallowed_chars(custom_id)
                     or len(custom_id) > SHORT_MAX_LENGTH):
+                app.logger.info(f'Переданная короткая ссылка {custom_id} не '
+                                'отвечает требованиям.')
                 raise APICustomError(
                     'Указано недопустимое имя для короткой ссылки'
                 )
             elif not check_for_duplicates(custom_id):
+                app.logger.info(f'Переданная короткая ссылка {custom_id} не '
+                                'уникальна.')
                 raise APICustomError(f'Имя "{custom_id}" уже занято.')
         else:
             custom_id: str = get_unique_short_id()
@@ -54,7 +65,7 @@ class NewShortId(Resource):
         urlmap = URLMap(original=url, short=custom_id)
         db.session.add(urlmap)
         db.session.commit()
-
+        app.logger.info(f'Новая запись с id {urlmap.id} создана.')
         return urlmap.original_short_serializer(), 201
 
 
@@ -71,8 +82,12 @@ class GetOriginalUrl(Resource):
         """
         urlmap = URLMap.query.filter_by(short=short_id).first()
         if not urlmap:
+            app.logger.warning('Ошибка 404 при обращении к странице по '
+                               f'короткой ссылке {short_id}.')
             raise APICustomError('Указанный id не найден',
                                  status_code=404)
+        app.logger.info(f'В ответ на короткую ссылку {short_id} передан '
+                        f'оригинальный url {urlmap.original}.')
         return urlmap.original_short_serializer(mode='original_only')
 
 

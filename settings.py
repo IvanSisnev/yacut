@@ -4,6 +4,7 @@
 import os
 from string import ascii_letters, digits
 from typing import Final
+from pathlib import Path
 
 
 class Config(object):
@@ -31,3 +32,12 @@ ORIGINAL_MAX_LENGTH: Final[int] = 256
 # допустимая длина короткой ссылки, переданной пользователем
 SHORT_MIN_LENGTH: Final[int] = 1
 SHORT_MAX_LENGTH: Final[int] = 16
+
+# формат логов
+LOG_FORMAT: Final[str] = '%(asctime)s - [%(levelname)s] - %(message)s'
+
+# формат даты и времени для логов
+DT_FORMAT: Final[str] = '%d.%m.%Y %H:%M:%S'
+
+# путь до директории проекта
+BASE_DIR: Final[Path] = Path(__file__).parent
