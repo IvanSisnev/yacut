@@ -132,3 +132,7 @@ dmypy.json
 
 # obsolete files catalog
 /obsolete/
+
+# other folders
+.DS_Store
+.idea
