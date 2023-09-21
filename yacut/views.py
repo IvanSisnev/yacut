@@ -1,8 +1,11 @@
 """
 View-функции приложения.
 """
+from http import HTTPStatus
+
 from flask.views import View
 from flask import render_template, redirect, abort
+from werkzeug.exceptions import NotFound
 
 from yacut import app, db
 from yacut.models import URLMap
@@ -23,23 +26,23 @@ class IndexPage(View):
         """
         form = UrlForm()
 
-        # если форма заполнена и отправлена
-        if form.validate_on_submit():
-            short_id = form.custom_id.data
-            # если short_id не передана, создаю ее
-            if not short_id:
-                short_id: str = get_unique_short_id()
-
-            urlmap = URLMap(original=form.original_link.data, short=short_id)
-            db.session.add(urlmap)
-            db.session.commit()
-            app.logger.info(f'Новая запись с id {urlmap.id} создана.')
-            # возвращаю шаблон с созданной короткой ссылкой
+        if not form.validate_on_submit():
+            # возвращаю шаблон с формой
             return render_template('index_page.html',
-                                   form=form, urlmap=urlmap), 200
-        # возвращаю шаблон с формой
+                                   form=form), HTTPStatus.OK
+
+        short_id = form.custom_id.data
+        # если short_id не передана, создаю ее
+        if not short_id:
+            short_id: str = get_unique_short_id()
+
+        urlmap = URLMap(original=form.original_link.data, short=short_id)
+        db.session.add(urlmap)
+        db.session.commit()
+        app.logger.info(f'Новая запись с id {urlmap.id} создана.')
+        # возвращаю шаблон с созданной короткой ссылкой
         return render_template('index_page.html',
-                               form=form), 200
+                               form=form, urlmap=urlmap), HTTPStatus.OK
 
 
 app.add_url_rule('/', view_func=IndexPage.as_view('index_page'))
@@ -55,11 +58,10 @@ class RedirectPage(View):
         """
         Перенаправляет с url адреса короткой ссылки на оригинальную ссылку.
         """
-        urlmap = URLMap.query.filter_by(short=short_id).first()
-        if not urlmap:
-            app.logger.warning('Ошибка 404 при обращении к странице по '
-                               f'короткой ссылке {short_id}.')
-            abort(404)
+        # да, короче получилось, но если я захочу логировать это исключение,
+        # мне придется делать try-except, перехватывать исключение и все равно
+        # делать abort(404)?
+        urlmap = URLMap.query.filter_by(short=short_id).first_or_404()
         app.logger.info(f'Успешный редирект по короткой ссылке {short_id}.')
         return redirect(urlmap.original)
 

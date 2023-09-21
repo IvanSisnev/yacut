@@ -1,6 +1,8 @@
 """
 API приложения.
 """
+from http import HTTPStatus
+
 from flask import request
 from flask_restful import Resource, Api
 from validators import ValidationError
@@ -20,6 +22,7 @@ class NewShortId(Resource):
     """
     Эндпоинт для создания короткой ссылки.
     """
+
     def post(self):
         """
         Отрабатывает метод post: создает запись в БД.
@@ -66,7 +69,7 @@ class NewShortId(Resource):
         db.session.add(urlmap)
         db.session.commit()
         app.logger.info(f'Новая запись с id {urlmap.id} создана.')
-        return urlmap.original_short_serializer(), 201
+        return urlmap.original_short_serializer(), HTTPStatus.CREATED
 
 
 api.add_resource(NewShortId, '/id/')
@@ -76,6 +79,7 @@ class GetOriginalUrl(Resource):
     """
     Эндпоинт для получения оригинальной ссылки.
     """
+
     def get(self, short_id):
         """
         Отрабатывает метод get: возвращает оригинальную ссылку.
@@ -85,7 +89,7 @@ class GetOriginalUrl(Resource):
             app.logger.warning('Ошибка 404 при обращении к странице по '
                                f'короткой ссылке {short_id}.')
             raise APICustomError('Указанный id не найден',
-                                 status_code=404)
+                                 status_code=HTTPStatus.NOT_FOUND)
         app.logger.info(f'В ответ на короткую ссылку {short_id} передан '
                         f'оригинальный url {urlmap.original}.')
         return urlmap.original_short_serializer(mode='original_only')

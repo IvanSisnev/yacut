@@ -2,7 +2,7 @@
 {% extends 'base.html' %}
 {% block title %}Ошибка 500{%endblock title %}
 {% block content %}
-{% with message='На сервере произошла ошибка' %}
-{% include 'back_to_main_page.html' %}
-{% endwith %}
+  {% with message='На сервере произошла ошибка' %}
+  {% include 'back_to_main_page.html' %}
+  {% endwith %}
 {% endblock content %}
