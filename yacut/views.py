@@ -4,8 +4,7 @@ View-функции приложения.
 from http import HTTPStatus
 
 from flask.views import View
-from flask import render_template, redirect, abort
-from werkzeug.exceptions import NotFound
+from flask import render_template, redirect
 
 from yacut import app, db
 from yacut.models import URLMap
