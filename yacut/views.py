@@ -57,9 +57,6 @@ class RedirectPage(View):
         """
         Перенаправляет с url адреса короткой ссылки на оригинальную ссылку.
         """
-        # да, короче получилось, но если я захочу логировать это исключение,
-        # мне придется делать try-except, перехватывать исключение и все равно
-        # делать abort(404)?
         urlmap = URLMap.query.filter_by(short=short_id).first_or_404()
         app.logger.info(f'Успешный редирект по короткой ссылке {short_id}.')
         return redirect(urlmap.original)
